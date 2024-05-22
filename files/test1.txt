@@ -1,0 +1,7 @@
+
+let ll = "hello";
+let y = ll;
+
+
+
+
