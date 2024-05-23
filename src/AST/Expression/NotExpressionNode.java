@@ -11,7 +11,15 @@ public class NotExpressionNode extends ExpressionNode {
     }
 
 
+
     public ExpressionNode getExpression() {
         return expression;
+    }
+
+    @Override
+    public String toString() {
+        return "NotExpressionNode{" +
+                "!" + expression +
+                '}';
     }
 }

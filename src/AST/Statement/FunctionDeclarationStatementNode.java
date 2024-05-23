@@ -28,10 +28,9 @@ public class FunctionDeclarationStatementNode extends StatementNode {
 
     @Override
     public String toString() {
-        return "FunctionDeclarationStatement{" +
-                "functionName='" + functionName + '\'' +
-                ", parameters=" + parameters +
-                ", body=" + statements +
-                '}';
+        return "FunctionDeclarationStatement=" +
+                "functionName=" + functionName + "(" +
+                "parameters=" + parameters +
+                ") { body=" + statements + '}';
     }
 }

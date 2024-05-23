@@ -1,8 +1,8 @@
 package Symbol;
 
 public class SymbolInfo {
-    private String type;
-    private Object value;
+    private final String type;
+    private final Object value;
 
     public SymbolInfo(String type, Object value) {
         this.type = type;
@@ -15,5 +15,10 @@ public class SymbolInfo {
 
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return "Type: " + type + ", Value: " + value;
     }
 }

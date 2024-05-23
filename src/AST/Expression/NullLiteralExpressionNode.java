@@ -13,8 +13,8 @@ public class NullLiteralExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return "NullLiteralExpressionNode{" +
-                "text='" + text + '\'' +
+        return "\nNullLiteralExpressionNode{" +
+                "\n\tvalue='" + text + '\'' +
                 '}';
     }
 }

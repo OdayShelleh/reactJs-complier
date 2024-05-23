@@ -1,8 +1,5 @@
 parser grammar JavaScriptParser;
 
-@header{
-   package antlr;
-}
 
 options {
     tokenVocab = JavaScriptLexer;
@@ -34,6 +31,7 @@ else: Else OpenBrace statement* CloseBrace;
 expression
     : Identifier OpenBracket expression CloseBracket # MemberIndexExpression
     | Identifier Dot Identifier # ObjectDotPropertyExpression
+    | Identifier Dot Identifier Assign expression # MemberAssignmentExpression
     | Identifier Dot Identifier OpenParen (expression (Comma expression)*)? CloseParen # ObjectDotFunctionCallExpression
 
     | New Identifier OpenParen (expression (Comma expression)*)? CloseParen # NewExpression

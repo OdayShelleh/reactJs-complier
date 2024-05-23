@@ -21,8 +21,7 @@ public class NonEqualityExpressionNode extends ExpressionNode {
     @Override
     public String toString() {
         return "NonEqualityExpressionNode{" +
-                "left=" + left +
-                ", right=" + right +
+                left + "!==" + right +
                 '}';
     }
 }

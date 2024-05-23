@@ -1,16 +1,16 @@
 package AST.Expression;
 
 public class AssignmentExpressionNode extends ExpressionNode {
-    private final String variable;
+    private final String identifier;
     private final ExpressionNode expression;
 
-    public AssignmentExpressionNode(String variable, ExpressionNode expression) {
-        this.variable = variable;
+    public AssignmentExpressionNode(String identifier, ExpressionNode expression) {
+        this.identifier = identifier;
         this.expression = expression;
     }
 
-    public String getVariable() {
-        return variable;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public ExpressionNode getExpression() {
@@ -19,6 +19,6 @@ public class AssignmentExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return "Assignment: " + variable + " = " + expression.toString();
+        return "Assignment: " + identifier + " = " + expression;
     }
 }

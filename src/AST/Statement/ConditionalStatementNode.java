@@ -1,14 +1,16 @@
 package AST.Statement;
 
+import AST.Expression.ExpressionNode;
+
 import java.util.List;
 
 public class ConditionalStatementNode extends StatementNode {
-    private final String ifCondition;
+    private final ExpressionNode ifCondition;
     private final List<StatementNode> thenBranch;
     private final List<ElseIfNode> elseIfBranches;
     private final ElseNode elseBranch;
 
-    public ConditionalStatementNode(String condition, List<StatementNode> thenBranch, List<ElseIfNode> elseIfBranches, ElseNode elseBranch) {
+    public ConditionalStatementNode(ExpressionNode condition, List<StatementNode> thenBranch, List<ElseIfNode> elseIfBranches, ElseNode elseBranch) {
         this.ifCondition = condition;
         this.thenBranch = thenBranch;
         this.elseIfBranches = elseIfBranches;
@@ -16,7 +18,7 @@ public class ConditionalStatementNode extends StatementNode {
     }
 
     // Getters and setters
-    public String getIfCondition() {
+    public ExpressionNode getIfCondition() {
         return ifCondition;
     }
 
@@ -35,11 +37,11 @@ public class ConditionalStatementNode extends StatementNode {
 
     @Override
     public String toString() {
-        return "ConditionalStatementNode{" +
-                "ifCondition='" + ifCondition + '\'' +
-                ", thenBranch=" + thenBranch +
-                ", elseIfBranches=" + elseIfBranches +
-                ", elseBranch=" + elseBranch +
-                '}';
+        return "\nConditionalStatementNode: " +
+                "\n\tif(" + ifCondition + ") { \n" +
+                thenBranch +
+                "\n }" +
+                elseIfBranches +
+                "\n\t" + elseBranch;
     }
 }

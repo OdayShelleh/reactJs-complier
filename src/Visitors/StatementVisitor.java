@@ -1,8 +1,8 @@
 package Visitors;
 
 import AST.Expression.ExpressionNode;
-import AST.Expression.IdentifierExpressionNode;
 import AST.Statement.*;
+import ErrorHandling.SemanticError;
 import Symbol.SymbolInfo;
 import Symbol.SymbolTable;
 import antlr.JavaScriptParser.*;
@@ -13,18 +13,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode> {
-    private final SymbolTable symbolTable = new SymbolTable();
+    private final SymbolTable symbolTable;
+
+    public StatementVisitor(SymbolTable symbolTable) {
+        this.symbolTable = symbolTable;
+    }
 
 
     @Override
     public StatementNode visitVariableDeclarationStatement(VariableDeclarationStatementContext ctx) {
-        String name = ctx.Identifier().getText();
-        // let x = 4;
-        ExpressionNode expression = (ExpressionNode) visit(ctx.expression());
+        String identifier = ctx.Identifier().getText();
+        if (symbolTable.lookup(identifier) != null) {
+            throw new SemanticError("Variable '" + identifier + "' already declared.");
+        }
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
+        ExpressionNode expression = expressionVisitor.visit(ctx.expression());
 
-        symbolTable.addSymbol(name, new SymbolInfo("variable", ctx.expression().getText()));
-        return new VariableDeclarationStatementNode(name, expression);
+        
+        symbolTable.addSymbol(identifier, new SymbolInfo("variable", expression));
+
+        return new VariableDeclarationStatementNode(identifier, expression);
     }
+
+
+    @Override
+    public StatementNode visitFunctionDectarationStatement(FunctionDectarationStatementContext ctx) {
+        String functionName = ctx.Identifier(0).getText();
+
+        symbolTable.enterScope();
+        List<String> parameters = new ArrayList<>();
+        if (ctx.Identifier() != null) {
+            for (TerminalNode parameter : ctx.Identifier()) {
+                String paramName = parameter.getText();
+                parameters.add(paramName);
+                symbolTable.addSymbol(paramName, new SymbolInfo("parameter", null));
+            }
+        }
+        List<StatementNode> statements = new ArrayList<>();
+        for (StatementContext stmtCtx : ctx.statement()) {
+            statements.add(visit(stmtCtx));
+        }
+        symbolTable.exitScope();
+        return new FunctionDeclarationStatementNode(functionName, parameters, statements);
+    }
+
 
     @Override
     public StatementNode visitArrayDeclarationStatement(ArrayDeclarationStatementContext ctx) {
@@ -36,13 +68,12 @@ public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode>
         }
         StatementNode expression = visit(ctx.expression());
         return new ArrayDeclarationStatementNode(identifiers, expression);
-
     }
 
     @Override
     public StatementNode visitConditionalStatement(ConditionalStatementContext ctx) {
-
-        String condition = ctx.if_().expression().getText();
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
+        ExpressionNode condition = expressionVisitor.visit(ctx.if_().expression());
         List<StatementNode> thenBranch = new ArrayList<>();
         for (StatementContext stmtCtx : ctx.if_().statement()) {
             thenBranch.add(visit(stmtCtx));
@@ -55,12 +86,32 @@ public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode>
         ElseNode elseBranch = ctx.else_() != null ? (ElseNode) visit(ctx.else_()) : null;
 
         return new ConditionalStatementNode(condition, thenBranch, elseIfBranches, elseBranch);
+    }
 
+    @Override
+    public StatementNode visitElseif(ElseifContext ctx) {
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
+        ExpressionNode condition = expressionVisitor.visit(ctx.expression());
+        List<StatementNode> thenBranch = new ArrayList<>();
+        for (StatementContext stmtCtx : ctx.statement()) {
+            thenBranch.add(visit(stmtCtx));
+        }
+        return new ElseIfNode(condition, thenBranch);
+    }
+
+    @Override
+    public StatementNode visitElse(ElseContext ctx) {
+        List<StatementNode> thenBranch = new ArrayList<>();
+        for (StatementContext stmtCtx : ctx.statement()) {
+            thenBranch.add(visit(stmtCtx));
+        }
+        return new ElseNode(thenBranch);
     }
 
     @Override
     public StatementNode visitLoopStatement(LoopStatementContext ctx) {
-        ExpressionNode condition = (ExpressionNode) visit(ctx.expression());
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
+        ExpressionNode condition = expressionVisitor.visit(ctx.expression());
         List<StatementNode> statements = new ArrayList<>();
         for (StatementContext stmtCtx : ctx.statement()) {
             statements.add(visit(stmtCtx));
@@ -79,66 +130,22 @@ public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode>
     }
 
     @Override
-    public StatementNode visitFunctionDectarationStatement(FunctionDectarationStatementContext ctx) {
-        String functionName = ctx.Identifier(0).toString();
-        List<String> parameters = new ArrayList<>();
-        if (ctx.Identifier() != null) {
-            for (int i = 1; i < ctx.Identifier().size(); i++) {
-                String parameter = ctx.Identifier().get(i).getText();
-                parameters.add(parameter);
-                symbolTable.addSymbol(parameter, new SymbolInfo("parameter", null));
-            }
-        }
-        List<StatementNode> statements = new ArrayList<>();
-        for (StatementContext stmtCtx : ctx.statement()) {
-            statements.add(visit(stmtCtx));
-        }
-        symbolTable.addSymbol(functionName, new SymbolInfo("function", null)); // Add function name to symbol table
-        return new FunctionDeclarationStatementNode(functionName, parameters, statements);
-    }
-
-    @Override
     public StatementNode visitReturnStatement(ReturnStatementContext ctx) {
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
         ExpressionNode expression = null;
-        if (ctx.expression() != null) {
-            expression = (ExpressionNode) visit(ctx.expression());
+        if (ctx.expression().getText() != null) {
+            expression = expressionVisitor.visit(ctx.expression());
         }
         return new ReturnStatementNode(expression);
     }
 
 
     @Override
-    public StatementNode visitElseif(ElseifContext ctx) {
-        ExpressionNode condition = (ExpressionNode) visit(ctx.expression());
-        List<StatementNode> thenBranch = new ArrayList<>();
-        for (StatementContext stmtCtx : ctx.statement()) {
-            thenBranch.add(visit(stmtCtx));
-        }
-        return new ElseIfNode(condition, thenBranch);
-    }
-
-    @Override
-    public StatementNode visitElse(ElseContext ctx) {
-        List<StatementNode> thenBranch = new ArrayList<>();
-        for (StatementContext stmtCtx : ctx.statement()) {
-            thenBranch.add(visit(stmtCtx));
-        }
-        return new ElseNode(thenBranch);
-    }
-
-
-    @Override
     public StatementNode visitExpressionStatement(ExpressionStatementContext ctx) {
-        ExpressionNode expression = (ExpressionNode) visit(ctx.expression());
-        System.out.println(ctx.expression().children.get(1).getText());
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
+        ExpressionNode expression = expressionVisitor.visit(ctx.expression());
         return new ExpressionStatementNode(expression);
 
     }
 
-    @Override
-    public StatementNode visitIdentifierExpression(IdentifierExpressionContext ctx) {
-        ExpressionNode identifier = (ExpressionNode) visit(ctx.Identifier());
-        symbolTable.addSymbol(ctx.Identifier().getText(), new SymbolInfo("variable", identifier)); // Add identifier to symbol table
-        return new IdentifierExpressionNode(identifier);
-    }
 }

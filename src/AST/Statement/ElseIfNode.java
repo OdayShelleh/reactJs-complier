@@ -6,8 +6,8 @@ import AST.Expression.ExpressionNode;
 import java.util.List;
 
 public class ElseIfNode extends StatementNode {
-    private ExpressionNode condition;
-    private List<StatementNode> thenBranch;
+    private final ExpressionNode condition;
+    private final List<StatementNode> thenBranch;
 
     public ElseIfNode(ExpressionNode condition, List<StatementNode> thenBranch) {
         this.condition = condition;
@@ -25,9 +25,6 @@ public class ElseIfNode extends StatementNode {
 
     @Override
     public String toString() {
-        return "ElseIfNode{" +
-                "condition=" + condition +
-                ", thenBranch=" + thenBranch +
-                '}';
+        return "else if(" + condition + ") {\n\t" + thenBranch + "\n}";
     }
 }

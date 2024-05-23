@@ -6,21 +6,17 @@ import AST.Statement.StatementNode;
 import java.beans.Expression;
 
 public class DivideExpressionNode extends ExpressionNode {
-    private Expression left;
-    private Expression right;
+    private ExpressionNode left;
+    private ExpressionNode right;
 
-    public DivideExpressionNode(StatementNode left, StatementNode right) {
+    public DivideExpressionNode(ExpressionNode left, ExpressionNode right) {
     }
 
-    public Expression getLeft() {
+    public ExpressionNode getLeft() {
         return left;
     }
 
-    public void setLeft(Expression left) {
-        this.left = left;
-    }
-
-    public Expression getRight() {
+    public ExpressionNode getRight() {
         return right;
 
     }
@@ -28,8 +24,7 @@ public class DivideExpressionNode extends ExpressionNode {
     @Override
     public String toString() {
         return "DivideExpressionNode{" +
-                "left=" + left +
-                ", right=" + right +
+                left + " / " + right +
                 '}';
     }
 }

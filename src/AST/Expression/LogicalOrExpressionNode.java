@@ -9,12 +9,18 @@ public class LogicalOrExpressionNode extends ExpressionNode {
         this.rightOperand = rightOperand;
     }
 
-    public ExpressionNode getLeftOperand() {
+    public ExpressionNode getLeft() {
         return leftOperand;
     }
 
-    public ExpressionNode getRightOperand() {
+    public ExpressionNode getRight() {
         return rightOperand;
     }
 
+    @Override
+    public String toString() {
+        return "LogicalOrExpressionNode{" +
+                leftOperand + " || " + rightOperand +
+                '}';
+    }
 }

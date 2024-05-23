@@ -22,4 +22,11 @@ public class AnonFunctionExpressionNode extends ExpressionNode {
         return statements;
     }
 
+    @Override
+    public String toString() {
+        return "AnonFunctionExpressionNode{" +
+                "parameters=" + parameters +
+                ", statements=" + statements +
+                '}';
+    }
 }

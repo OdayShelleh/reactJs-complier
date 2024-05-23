@@ -4,27 +4,26 @@ package AST.Expression;
 import AST.Statement.StatementNode;
 
 public class MultiplyExpressionNode extends ExpressionNode {
-    private final StatementNode left;
-    private final StatementNode right;
+    private final ExpressionNode left;
+    private final ExpressionNode right;
 
-    public MultiplyExpressionNode(StatementNode left, StatementNode right) {
+    public MultiplyExpressionNode(ExpressionNode left, ExpressionNode right) {
         this.left = left;
         this.right = right;
     }
 
-    public StatementNode getLeft() {
+    public ExpressionNode getLeft() {
         return left;
     }
 
-    public StatementNode getRight() {
+    public ExpressionNode getRight() {
         return right;
     }
 
     @Override
     public String toString() {
         return "MultiplyExpressionNode{" +
-                "left=" + left +
-                ", right=" + right +
+                left + " * " + right +
                 '}';
     }
 }

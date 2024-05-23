@@ -13,4 +13,11 @@ public class ParenthesizedExpressionNode extends ExpressionNode {
     public ExpressionNode getExpression() {
         return expression;
     }
+
+    @Override
+    public String toString() {
+        return "ParenthesizedExpressionNode{" +
+                "expression=" + expression +
+                '}';
+    }
 }

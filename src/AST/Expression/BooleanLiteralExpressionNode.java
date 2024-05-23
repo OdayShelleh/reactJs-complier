@@ -9,10 +9,15 @@ public class BooleanLiteralExpressionNode extends ExpressionNode {
     }
 
     // getter and setter
-    public boolean getBooleanValue() {
+    public boolean getValue() {
         return BooleanValue;
 
     }
 
-
+    @Override
+    public String toString() {
+        return "BooleanLiteralExpressionNode{" +
+                "BooleanValue=" + BooleanValue +
+                '}';
+    }
 }

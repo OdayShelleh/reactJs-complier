@@ -4,22 +4,27 @@ package AST.Expression;
 import AST.Statement.StatementNode;
 
 public class ModulusExpressionNode extends ExpressionNode {
-    private final StatementNode left;
-    private final StatementNode right;
+    private final ExpressionNode left;
+    private final ExpressionNode right;
 
-    public ModulusExpressionNode(StatementNode left, StatementNode right) {
+    public ModulusExpressionNode(ExpressionNode left, ExpressionNode right) {
         this.left = left;
         this.right = right;
     }
 
-    public StatementNode getLeft() {
+    public ExpressionNode getLeft() {
         return left;
 
     }
 
-    public StatementNode getRight() {
+    public ExpressionNode getRight() {
         return right;
-
     }
 
+    @Override
+    public String toString() {
+        return "ModulusExpressionNode{" +
+                left + "%" + right +
+                '}';
+    }
 }

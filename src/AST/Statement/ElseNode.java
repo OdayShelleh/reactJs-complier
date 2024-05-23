@@ -16,8 +16,8 @@ public class ElseNode extends StatementNode {
 
     @Override
     public String toString() {
-        return "ElseNode{" +
-                "thenBranch=" + thenBranch +
-                '}';
+        return "else {" +
+                thenBranch +
+                " \n }";
     }
 }

@@ -8,4 +8,20 @@ public class ObjectDotPropertyExpressionNode extends ExpressionNode {
         this.identifier = identifier;
         this.property = property;
     }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    @Override
+    public String toString() {
+        return "ObjectDotPropertyExpressionNode{" +
+                "identifier='" + identifier + '\'' +
+                ", property='" + property + '\'' +
+                '}';
+    }
 }

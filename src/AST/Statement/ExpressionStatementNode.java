@@ -10,7 +10,7 @@ public class ExpressionStatementNode extends ExpressionNode {
         this.expression = expression;
     }
 
-    public StatementNode getExpression() {
+    public ExpressionNode getExpression() {
         return expression;
 
     }
@@ -21,8 +21,8 @@ public class ExpressionStatementNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return "ExpressionStatementNode{" +
-                "expression=" + expression +
+        return "ExpressionStatementNode{"
+                + expression +
                 '}';
     }
 }

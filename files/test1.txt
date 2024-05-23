@@ -1,7 +1,8 @@
+function foo(x) {
+    let y = 10;
+    let z = x + y;
+    return z;
+}
 
-let ll = "hello";
-let y = ll;
-
-
-
-
+let a = 5;
+let b = foo(a);

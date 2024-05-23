@@ -24,8 +24,8 @@ public class ArrayDeclarationStatementNode extends StatementNode {
 
     @Override
     public String toString() {
-        return "ArrayDeclarationStatementNode{" +
-                "identifiers=" + identifiers +
+        return "\nArrayDeclarationStatementNode{" +
+                "\n\tidentifiers=" + identifiers +
                 ", expression=" + expression +
                 '}';
     }

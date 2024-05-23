@@ -10,4 +10,11 @@ public class NumberLiteralExpressionNode extends ExpressionNode {
     public double getValue() {
         return text;
     }
+
+    @Override
+    public String toString() {
+        return "NumberLiteralExpressionNode{" +
+                "text=" + text +
+                '}';
+    }
 }

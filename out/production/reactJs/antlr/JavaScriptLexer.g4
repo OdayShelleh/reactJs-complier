@@ -1,9 +1,6 @@
 lexer grammar JavaScriptLexer;
 
 
-@lexer::header{
-package antler;
-}
 
 OpenBracket                : '[';
 CloseBracket               : ']';

@@ -1,8 +1,10 @@
 package com.react;
 
+import AST.ASTPrinter;
 import AST.Expression.BooleanLiteralExpressionNode;
 import AST.ProgramNode;
 import AST.Statement.*;
+import Symbol.SymbolTable;
 import Visitors.ProgramVisitor;
 import antlr.JavaScriptLexer;
 import antlr.JavaScriptParser;
@@ -26,18 +28,17 @@ public class Main {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         JavaScriptParser parser = new JavaScriptParser(tokens);
         ParseTree ast = parser.program();
-        ProgramVisitor visitor = new ProgramVisitor();
+
+        SymbolTable symbolTable = new SymbolTable();
+
+        ProgramVisitor visitor = new ProgramVisitor(symbolTable);
         StatementNode result = visitor.visit(ast);
 
+        symbolTable.printSymbolTable();
+//        symbolTable.printAllScopes();
+//        System.out.println(ASTPrinter.printAST(result));
+//        System.out.printf(result.toString() + "\n");
 
-        System.out.printf(result.toString() + "\n");
-//        printAST(result, 1);
-    }
-
-    private static void printIndent(int indent) {
-        for (int i = 0; i < indent; i++) {
-            System.out.print("  ");
-        }
     }
 
 

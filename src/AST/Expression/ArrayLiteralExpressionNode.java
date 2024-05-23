@@ -12,4 +12,11 @@ public class ArrayLiteralExpressionNode extends ExpressionNode {
     public List<ExpressionNode> getElements() {
         return elements;
     }
+
+    @Override
+    public String toString() {
+        return "ArrayLiteralExpressionNode{" +
+                "elements=" + elements +
+                '}';
+    }
 }

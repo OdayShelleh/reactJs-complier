@@ -11,9 +11,12 @@ public class ProgramNode extends StatementNode {
         this.statements = new ArrayList<>();
     }
 
-
     public void addChild(StatementNode statement) {
         statements.add(statement);
+    }
+
+    public ArrayList<StatementNode> getStatements() {
+        return statements;
     }
 
     @Override

@@ -2,8 +2,8 @@ package Visitors;
 
 
 import AST.Expression.*;
-
 import AST.Statement.StatementNode;
+import ErrorHandling.SemanticError;
 import Symbol.SymbolInfo;
 import Symbol.SymbolTable;
 import antlr.JavaScriptParser.*;
@@ -13,7 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNode> {
-    private final SymbolTable symbolTable = new SymbolTable();
+    //    private final SymbolTable symbolTable = SymbolTable.getInstance();
+    private final SymbolTable symbolTable;
+
+    public ExpressionVisitor(SymbolTable symbolTable) {
+        this.symbolTable = symbolTable;
+    }
+
 
     @Override
     public ExpressionNode visitMemberIndexExpression(MemberIndexExpressionContext ctx) {
@@ -28,12 +34,18 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
 
     @Override
     public ExpressionNode visitAdditionExpression(AdditionExpressionContext ctx) {
-        return super.visitAdditionExpression(ctx);
+        String operator = ctx.Plus().getText();
+        ExpressionNode leftExpression = visit(ctx.expression(0));
+        ExpressionNode rightExpression = visit(ctx.expression(1));
+        return new AdditionExpressionNode(leftExpression, rightExpression, operator);
     }
 
     @Override
     public ExpressionNode visitSubtractionExpression(SubtractionExpressionContext ctx) {
-        return super.visitSubtractionExpression(ctx);
+        String operator = ctx.Minus().getText();
+        ExpressionNode leftExpression = visit(ctx.expression(0));
+        ExpressionNode rightExpression = visit(ctx.expression(1));
+        return new SubtractionExpressionNode(leftExpression, rightExpression, operator);
     }
 
 
@@ -64,7 +76,9 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
 
     @Override
     public ExpressionNode visitLogicalAndExpression(LogicalAndExpressionContext ctx) {
-        return super.visitLogicalAndExpression(ctx);
+        ExpressionNode left = visit(ctx.expression(0));
+        ExpressionNode right = visit(ctx.expression(1));
+        return new LogicalAndExpressionNode(left, right);
     }
 
 
@@ -72,35 +86,62 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
 
     @Override
     public ExpressionNode visitEqualityExpression(EqualityExpressionContext ctx) {
-        return super.visitEqualityExpression(ctx);
+        ExpressionNode left = visit(ctx.expression(0));
+        ExpressionNode right = visit(ctx.expression(1));
+        return new EqualityExpressionNode(left, right);
     }
 
     @Override
     public ExpressionNode visitNonEqualityExpression(NonEqualityExpressionContext ctx) {
         ExpressionNode left = visit(ctx.expression(0));
         ExpressionNode right = visit(ctx.expression(1));
-
         return new NonEqualityExpressionNode(left, right);
     }
 
     @Override
     public ExpressionNode visitMoreComparisonExpression(MoreComparisonExpressionContext ctx) {
-        return super.visitMoreComparisonExpression(ctx);
-    }
-
-    @Override
-    public ExpressionNode visitLessComparisonExpression(LessComparisonExpressionContext ctx) {
-        return super.visitLessComparisonExpression(ctx);
-    }
-
-    @Override
-    public ExpressionNode visitLessOrEqualComparisonExpression(LessOrEqualComparisonExpressionContext ctx) {
-        return super.visitLessOrEqualComparisonExpression(ctx);
+        ExpressionNode left = visit(ctx.expression(0));
+        ExpressionNode right = visit(ctx.expression(1));
+        return new MoreComparisonExpressionNode(left, right);
     }
 
     @Override
     public ExpressionNode visitMoreOrEqualComparisonExpression(MoreOrEqualComparisonExpressionContext ctx) {
-        return super.visitMoreOrEqualComparisonExpression(ctx);
+        ExpressionNode left = visit(ctx.expression(0));
+        ExpressionNode right = visit(ctx.expression(1));
+        return new MoreOrEqualComparisonExpressionNode(left, right);
+    }
+
+    @Override
+    public ExpressionNode visitLessComparisonExpression(LessComparisonExpressionContext ctx) {
+        ExpressionNode left = visit(ctx.expression(0));
+        ExpressionNode right = visit(ctx.expression(1));
+        return new LessComparisonExpressionNode(left, right);
+    }
+
+    @Override
+    public ExpressionNode visitLessOrEqualComparisonExpression(LessOrEqualComparisonExpressionContext ctx) {
+        ExpressionNode left = visit(ctx.expression(0));
+        ExpressionNode right = visit(ctx.expression(1));
+        return new LessOrEqualComparisonExpressionNode(left, right);
+    }
+
+
+    @Override
+    public ExpressionNode visitIdentifierExpression(IdentifierExpressionContext ctx) {
+        String identifier = ctx.Identifier().getText();
+
+        if (symbolTable.lookup(identifier) == null) {
+            throw new SemanticError("Variable '" + identifier + "' not declared.");
+        }
+        return new IdentifierExpressionNode(identifier);
+    }
+
+    @Override
+    public ExpressionNode visitAssignmentExpression(AssignmentExpressionContext ctx) {
+        String identifier = ctx.Identifier().getText();
+        ExpressionNode expression = visit(ctx.expression());
+        return new AssignmentExpressionNode(identifier, expression);
     }
 
 
@@ -123,9 +164,7 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
     @Override
     public ExpressionNode visitStringLiteralExpression(StringLiteralExpressionContext ctx) {
         String value = ctx.StringLiteral().getText();
-        ExpressionNode exp = visit(ctx.StringLiteral());
-        System.out.println(exp);
-        return new StringLiteralExpressionNode(exp);
+        return new StringLiteralExpressionNode(value);
     }
 
     @Override
@@ -150,7 +189,11 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
 
     @Override
     public ExpressionNode visitArrayLiteralExpression(ArrayLiteralExpressionContext ctx) {
-        return super.visitArrayLiteralExpression(ctx);
+        List<ExpressionNode> elements = new ArrayList<>();
+        for (ExpressionContext exprCtx : ctx.expression()) {
+            elements.add(visit(exprCtx));
+        }
+        return new ArrayLiteralExpressionNode(elements);
     }
 
     //// Function
@@ -160,12 +203,10 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
         for (int i = 0; i < ctx.Identifier().size(); i++) {
             parameters.add(ctx.Identifier(i).getText());
         }
-
         List<StatementNode> body = new ArrayList<>();
         for (StatementContext stmtCtx : ctx.statement()) {
             body.add(visit(stmtCtx));
         }
-
         return new AnonFunctionExpressionNode(parameters, body);
     }
 
@@ -184,20 +225,23 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
     @Override
     public ExpressionNode visitFunctionCallExpression(FunctionCallExpressionContext ctx) {
         String functionName = ctx.Identifier().getText();
-        List<StatementNode> arguments = new ArrayList<>();
+
+        List<ExpressionNode> arguments = new ArrayList<>();
         if (!ctx.expression().isEmpty()) {
             for (ExpressionContext expr : ctx.expression()) {
                 arguments.add(visit(expr));
             }
         }
-        symbolTable.addSymbol(functionName, new SymbolInfo("function call", null));
+//        symbolTable.addSymbol(functionName, new SymbolInfo("function call", null));
         return new FunctionCallExpressionNode(functionName, arguments);
     }
 
 
     @Override
     public ExpressionNode visitModulusExpression(ModulusExpressionContext ctx) {
-        return super.visitModulusExpression(ctx);
+        ExpressionNode left = visit(ctx.expression(0));
+        ExpressionNode right = visit(ctx.expression(1));
+        return new ModulusExpressionNode(left, right);
     }
 
 
@@ -209,14 +253,6 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
             arguments.add(visit(exprCtx));
         }
         return new NewExpressionNode(className, arguments);
-    }
-
-
-    @Override
-    public ExpressionNode visitAssignmentExpression(AssignmentExpressionContext ctx) {
-        String variable = ctx.Identifier().getText();
-        ExpressionNode expression = visit(ctx.expression());
-        return new AssignmentExpressionNode(variable, expression);
     }
 
 
@@ -243,38 +279,18 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
         return new ObjectDotPropertyExpressionNode(identifier, property);
     }
 
-
-    //// JSX Code
     @Override
-    public ExpressionNode visitFragmentHTMLElement(FragmentHTMLElementContext ctx) {
-        return super.visitFragmentHTMLElement(ctx);
+    public ExpressionNode visitMemberAssignmentExpression(MemberAssignmentExpressionContext ctx) {
+        String object = ctx.Identifier(0).getText();
+        String property = ctx.Identifier(1).getText();
+        ExpressionNode value = visit(ctx.expression());
+        return new MemberAssignmentExpressionNode(object, property, value);
     }
-
-    @Override
-    public ExpressionNode visitNormalHTMLElement(NormalHTMLElementContext ctx) {
-        return super.visitNormalHTMLElement(ctx);
-    }
-
-    @Override
-    public ExpressionNode visitSelfClosingHTMLElement(SelfClosingHTMLElementContext ctx) {
-        return super.visitSelfClosingHTMLElement(ctx);
-    }
-
-
-    @Override
-    public ExpressionNode visitHtmlAttribute(HtmlAttributeContext ctx) {
-        return super.visitHtmlAttribute(ctx);
-    }
-
-    @Override
-    public ExpressionNode visitStringLiteralAttributeValue(StringLiteralAttributeValueContext ctx) {
-        return super.visitStringLiteralAttributeValue(ctx);
-    }
-
 
     @Override
     public ExpressionNode visitNotExpressionStatement(NotExpressionStatementContext ctx) {
-        return super.visitNotExpressionStatement(ctx);
+        ExpressionNode expression = visit(ctx.expression());
+        return new NotExpressionNode(expression);
     }
 
     @Override

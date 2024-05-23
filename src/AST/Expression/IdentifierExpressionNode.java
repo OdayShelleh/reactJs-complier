@@ -2,22 +2,23 @@ package AST.Expression;
 
 
 public class IdentifierExpressionNode extends ExpressionNode {
-    private ExpressionNode identifier;
+    private final String identifier;
 
-    public IdentifierExpressionNode(ExpressionNode identifier) {
+    public IdentifierExpressionNode(String identifier) {
         this.identifier = identifier;
 
     }
 
-    public ExpressionNode getIdentifier() {
+    public String getIdentifier() {
         return identifier;
 
     }
 
-    public void setIdentifier(ExpressionNode identifier) {
-        this.identifier = identifier;
-
+    @Override
+    public String toString() {
+        return "IdentifierExpressionNode{" +
+                "identifier=" + identifier +
+                '}';
     }
-
 }
 

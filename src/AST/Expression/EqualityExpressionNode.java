@@ -20,8 +20,7 @@ public class EqualityExpressionNode extends ExpressionNode {
     @Override
     public String toString() {
         return "EqualityExpressionNode{" +
-                "left=" + left +
-                ", right=" + right +
+                left + " == " + right +
                 '}';
     }
 }

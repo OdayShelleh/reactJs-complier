@@ -3,7 +3,7 @@ package AST.Expression;
 import java.util.List;
 
 public class ObjectLiteralExpressionNode extends ExpressionNode {
-    
+
     private final List<String> keys;
     private final List<ExpressionNode> values;
 
@@ -18,5 +18,13 @@ public class ObjectLiteralExpressionNode extends ExpressionNode {
 
     public List<ExpressionNode> getValues() {
         return values;
+    }
+
+    @Override
+    public String toString() {
+        return "ObjectLiteralExpressionNode{" +
+                "keys=" + keys +
+                ", values=" + values +
+                '}';
     }
 }

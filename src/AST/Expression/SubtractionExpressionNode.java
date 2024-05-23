@@ -22,4 +22,11 @@ public class SubtractionExpressionNode extends ExpressionNode {
     public String getOperator() {
         return operator;
     }
+
+    @Override
+    public String toString() {
+        return "SubtractionExpressionNode{" +
+                left + operator + right +
+                '}';
+    }
 }

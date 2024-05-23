@@ -1,7 +1,5 @@
 // Generated from C:/Users/oday/Desktop/reactJs/src/antlr/JavaScriptParser.g4 by ANTLR 4.13.1
 package antlr;
-
-
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -302,6 +300,13 @@ public interface JavaScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNonEqualityExpression(JavaScriptParser.NonEqualityExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code MemberAssignmentExpression}
+	 * labeled alternative in {@link JavaScriptParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMemberAssignmentExpression(JavaScriptParser.MemberAssignmentExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code LessComparisonExpression}
 	 * labeled alternative in {@link JavaScriptParser#expression}.

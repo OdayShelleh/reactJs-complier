@@ -23,4 +23,12 @@ public class TernaryExpressionNode extends ExpressionNode {
         return falseExpr;
     }
 
+    @Override
+    public String toString() {
+        return "TernaryExpressionNode{" +
+                "condition=" + condition +
+                ", trueExpr=" + trueExpr +
+                ", falseExpr=" + falseExpr +
+                '}';
+    }
 }
