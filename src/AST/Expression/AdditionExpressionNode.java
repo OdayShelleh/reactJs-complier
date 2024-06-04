@@ -25,7 +25,7 @@ public class AdditionExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return "SubtractionExpressionNode{" +
+        return "AdditionExpressionNode{" +
                 left + operator + right +
                 '}';
     }

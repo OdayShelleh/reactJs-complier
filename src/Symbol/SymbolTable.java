@@ -7,24 +7,25 @@ import java.util.Map;
 
 public class SymbolTable {
     private final List<Map<String, SymbolInfo>> scopes;
-    private List<Map<String, SymbolInfo>> copy;
+    private List<Map<String, SymbolInfo>> copyScopes;
 
 
     public SymbolTable() {
         this.scopes = new ArrayList<>();
         this.scopes.add(new HashMap<>());// Global scope
-        copy = this.scopes;
     }
 
 
     public void enterScope() {
         this.scopes.add(new HashMap<>());
-        this.copy.add(new HashMap<>());
+        System.out.println(this.scopes.size() - 1);
+
 
     }
 
     public void exitScope() {
         if (this.scopes.size() > 1) {
+            this.copyScopes = new ArrayList<>(this.scopes);
             this.scopes.remove(this.scopes.size() - 1);
 
         }
@@ -32,7 +33,7 @@ public class SymbolTable {
 
     public void addSymbol(String name, SymbolInfo info) {
         this.scopes.get(this.scopes.size() - 1).put(name, info);
-        this.copy = this.scopes;
+
     }
 
     public SymbolInfo lookup(String name) {
@@ -46,9 +47,9 @@ public class SymbolTable {
 
     public void printSymbolTable() {
         System.out.println("Symbol Table:");
-        for (int i = 0; i < scopes.size(); i++) {
+        for (int i = 0; i < this.copyScopes.size(); i++) {
             System.out.println("Scope " + i + ":");
-            Map<String, SymbolInfo> currentScope = scopes.get(i);
+            Map<String, SymbolInfo> currentScope = this.copyScopes.get(i);
             for (Map.Entry<String, SymbolInfo> entry : currentScope.entrySet()) {
                 System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
             }
@@ -57,9 +58,9 @@ public class SymbolTable {
 
     public void printAllScopes() {
         System.out.println("Symbol Table:");
-        for (int i = 0; i < scopes.size(); i++) {
+        for (int i = 0; i < copyScopes.size(); i++) {
             System.out.println("Scope " + i + ":");
-            for (Map.Entry<String, SymbolInfo> entry : scopes.get(i).entrySet()) {
+            for (Map.Entry<String, SymbolInfo> entry : copyScopes.get(i).entrySet()) {
                 System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
             }
         }

@@ -130,9 +130,9 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
     @Override
     public ExpressionNode visitIdentifierExpression(IdentifierExpressionContext ctx) {
         String identifier = ctx.Identifier().getText();
-
-        if (symbolTable.lookup(identifier) == null) {
-            throw new SemanticError("Variable '" + identifier + "' not declared.");
+        SymbolInfo symbolInfo = symbolTable.lookup(identifier);
+        if (symbolInfo == null) {
+            throw new SemanticError("Variable '" + identifier + "' is not declared.");
         }
         return new IdentifierExpressionNode(identifier);
     }

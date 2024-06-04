@@ -29,7 +29,6 @@ public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode>
         ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
         ExpressionNode expression = expressionVisitor.visit(ctx.expression());
 
-        
         symbolTable.addSymbol(identifier, new SymbolInfo("variable", expression));
 
         return new VariableDeclarationStatementNode(identifier, expression);
@@ -39,18 +38,19 @@ public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode>
     @Override
     public StatementNode visitFunctionDectarationStatement(FunctionDectarationStatementContext ctx) {
         String functionName = ctx.Identifier(0).getText();
-
+        symbolTable.addSymbol(functionName, new SymbolInfo("function", null));
         symbolTable.enterScope();
         List<String> parameters = new ArrayList<>();
         if (ctx.Identifier() != null) {
-            for (TerminalNode parameter : ctx.Identifier()) {
-                String paramName = parameter.getText();
+            for (int i = 1; i < ctx.Identifier().size(); i++) {
+                String paramName = ctx.Identifier().get(i).getText();
                 parameters.add(paramName);
                 symbolTable.addSymbol(paramName, new SymbolInfo("parameter", null));
             }
         }
         List<StatementNode> statements = new ArrayList<>();
         for (StatementContext stmtCtx : ctx.statement()) {
+            System.out.println("inside statement: " + stmtCtx.getText());
             statements.add(visit(stmtCtx));
         }
         symbolTable.exitScope();
@@ -142,8 +142,19 @@ public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode>
 
     @Override
     public StatementNode visitExpressionStatement(ExpressionStatementContext ctx) {
+        if (ctx.expression() instanceof AssignmentExpressionContext) {
+            AssignmentExpressionContext assignmentCtx = (AssignmentExpressionContext) ctx.expression();
+
+            String identifier = assignmentCtx.Identifier().getText();
+            System.out.println(identifier);
+            if (symbolTable.lookup(identifier) == null) {
+                System.err.println("Warning: Variable '" + identifier + "' is not declared.");
+            }
+        }
         ExpressionVisitor expressionVisitor = new ExpressionVisitor(symbolTable);
         ExpressionNode expression = expressionVisitor.visit(ctx.expression());
+
+
         return new ExpressionStatementNode(expression);
 
     }

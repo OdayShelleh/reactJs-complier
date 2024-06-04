@@ -22,10 +22,9 @@ public class ProgramVisitor extends JavaScriptParserBaseVisitor<StatementNode> {
         ProgramNode program = new ProgramNode();
         StatementVisitor sv = new StatementVisitor(symbolTable);
 
-        for (ParseTree child : ctx.children) {
-            if (child instanceof StatementContext) {
-                program.addChild(sv.visit(child));
-            }
+        for (ParseTree child : ctx.statement()) {
+            StatementNode statement = sv.visit(child);
+            program.addChild(statement);
 
         }
 
