@@ -1,8 +1,22 @@
+let a = 6;
+
+
 function foo(x) {
     let y = 10;
     let z = x + y;
+
+    function ll(z, b) {
+    let u = 23;
+    }
     return z;
 }
 
-let a = 5;
-let b = foo(a);
+function boo (name) {
+    let m = "hllo";
+    let v = 33;
+}
+
+let v = 67;
+
+
+
