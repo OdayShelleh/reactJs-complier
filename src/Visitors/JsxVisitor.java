@@ -1,56 +1,85 @@
 package Visitors;
 
-import antlr.JavaScriptParser;
+import AST.Expression.ExpressionNode;
+import AST.JsxElement.*;
+import AST.Statement.StatementNode;
+import antlr.JavaScriptParser.*;
 import antlr.JavaScriptParserBaseVisitor;
 
-public class JsxVisitor extends JavaScriptParserBaseVisitor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class JsxVisitor extends JavaScriptParserBaseVisitor<StatementNode> {
+
+
     @Override
-    public Object visitJsxAttributeValue(JavaScriptParser.JsxAttributeValueContext ctx) {
-        return super.visitJsxAttributeValue(ctx);
+    public StatementNode visitCharDataContentNode(CharDataContentNodeContext ctx) {
+        return new CharDataContentNode(ctx.getText());
     }
 
     @Override
-    public Object visitStringLiteralAttributeValue(JavaScriptParser.StringLiteralAttributeValueContext ctx) {
-        return super.visitStringLiteralAttributeValue(ctx);
+    public StatementNode visitFragmentHTMLElement(FragmentHTMLElementContext ctx) {
+        List<JSXContentNode> children = new ArrayList<>();
+        for (JsxContentNodeContext childCtx : ctx.jsxContentNode()) {
+            children.add((JSXContentNode) visit(childCtx));
+        }
+        return new FragmentHTMLElementNode(children);
+    }
+
+
+    @Override
+    public StatementNode visitHtmlAttribute(HtmlAttributeContext ctx) {
+        String name = ctx.Identifier().getText();
+        HTMLAttributeValue value = (HTMLAttributeValue) visit(ctx.htmlAttributeValue());
+        return new HTMLAttribute(name, value);
+    }
+
+
+    @Override
+    public StatementNode visitHTMLElementContentNode(HTMLElementContentNodeContext ctx) {
+        JSXElementNode element = (JSXElementNode) visit(ctx.jsxElement());
+        return new HTMLElementContentNode(element);
     }
 
     @Override
-    public Object visitHtmlAttribute(JavaScriptParser.HtmlAttributeContext ctx) {
-        return super.visitHtmlAttribute(ctx);
+    public StatementNode visitJsxAttributeValue(JsxAttributeValueContext ctx) {
+        return new JsxAttributeValue((ExpressionNode) visit(ctx.expression()));
     }
 
     @Override
-    public Object visitJsxExpressionContentNode(JavaScriptParser.JsxExpressionContentNodeContext ctx) {
-        return super.visitJsxExpressionContentNode(ctx);
+    public StatementNode visitJsxExpressionContentNode(JsxExpressionContentNodeContext ctx) {
+        ExpressionNode expression = (ExpressionNode) visit(ctx.expression());
+        return new JsxExpressionContentNode(expression);
+    }
+
+
+    @Override
+    public StatementNode visitNormalHTMLElement(NormalHTMLElementContext ctx) {
+        String tagName = ctx.Identifier(0).getText();
+        List<HTMLAttribute> attributes = new ArrayList<>();
+        for (HtmlAttributeContext attrCtx : ctx.htmlAttribute()) {
+            attributes.add((HTMLAttribute) visit(attrCtx));
+        }
+        List<JSXContentNode> children = new ArrayList<>();
+        for (JsxContentNodeContext childCtx : ctx.jsxContentNode()) {
+            children.add((JSXContentNode) visit(childCtx));
+        }
+        return new NormalHTMLElementNode(tagName, attributes, children);
     }
 
     @Override
-    public Object visitHTMLElementContentNode(JavaScriptParser.HTMLElementContentNodeContext ctx) {
-        return super.visitHTMLElementContentNode(ctx);
+    public StatementNode visitSelfClosingHTMLElement(SelfClosingHTMLElementContext ctx) {
+        String tagName = ctx.Identifier().getText();
+        List<HTMLAttribute> attributes = new ArrayList<>();
+        for (HtmlAttributeContext attrCtx : ctx.htmlAttribute()) {
+            attributes.add((HTMLAttribute) visit(attrCtx));
+        }
+        return new SelfClosingHTMLElement(tagName, attributes);
     }
 
     @Override
-    public Object visitCharDataContentNode(JavaScriptParser.CharDataContentNodeContext ctx) {
-        return super.visitCharDataContentNode(ctx);
+    public StatementNode visitStringLiteralAttributeValue(StringLiteralAttributeValueContext ctx) {
+        return new StringLiteralAttributeValue(ctx.getText());
     }
-
-    @Override
-    public Object visitSelfClosingHTMLElement(JavaScriptParser.SelfClosingHTMLElementContext ctx) {
-        return super.visitSelfClosingHTMLElement(ctx);
-    }
-
-    @Override
-    public Object visitNormalHTMLElement(JavaScriptParser.NormalHTMLElementContext ctx) {
-        return super.visitNormalHTMLElement(ctx);
-    }
-
-    @Override
-    public Object visitFragmentHTMLElement(JavaScriptParser.FragmentHTMLElementContext ctx) {
-        return super.visitFragmentHTMLElement(ctx);
-    }
-
-    @Override
-    public Object visitJsxElementExpression(JavaScriptParser.JsxElementExpressionContext ctx) {
-        return super.visitJsxElementExpression(ctx);
-    }
+    
 }

@@ -1,7 +1,6 @@
 package AST.JsxElement;
 
-import AST.Expression.ExpressionNode;
+import AST.Statement.StatementNode;
 
-public class JSXContentNode extends ExpressionNode {
-
+public abstract class JSXContentNode extends StatementNode {
 }

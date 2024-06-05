@@ -1,6 +1,7 @@
 package AST;
 
 import AST.Expression.*;
+import AST.JsxElement.*;
 import AST.Statement.*;
 
 import java.util.List;
@@ -64,6 +65,9 @@ public class ASTPrinter {
             sb.append(indent(indent)).append("}\n");
         } else if (node instanceof BreakStatementNode) {
             sb.append(indent(indent)).append("break;\n");
+        } else if (node instanceof ReturnStatementNode) {
+            sb.append(indent(indent)).append("return " + printExpression(((ReturnStatementNode) node).getExpression(), 0) + ";\n");
+            printExpression(((ReturnStatementNode) node).getExpression(), indent);
         } else if (node instanceof ContinueStatementNode) {
             sb.append(indent(indent)).append("continue;\n");
         } else if (node instanceof ExpressionStatementNode) {
@@ -144,45 +148,46 @@ public class ASTPrinter {
             return ((BooleanLiteralExpressionNode) expr).getValue() + "";
         } else if (expr instanceof NullLiteralExpressionNode) {
             return ((NullLiteralExpressionNode) expr).getValue();
-        } else if (expr instanceof NumberLiteralExpressionNode) {
-            return ((NumberLiteralExpressionNode) expr).getValue() + "";
+        } else if (expr instanceof JSXElementNode) {
+            return printJsxElement(((JSXElementNode) expr), indent);
         } else {
             return "Unknown expression type";
         }
     }
 
-//     else if (expr instanceof JsxElementExpression) {
-//        return printJsxElement(((JsxElementExpression) expr).getJsxElement(), indent);
-//    }
 
+    private static String printJsxElement(JSXElementNode jsxElement, int indent) {
+        StringBuilder sb = new StringBuilder();
+        if (jsxElement instanceof FragmentHTMLElementNode) {
+            sb.append("<>");
 
-//    private static String printJsxElement(JsxElement jsxElement, int indent) {
-//        StringBuilder sb = new StringBuilder();
-//        if (jsxElement instanceof FragmentHTMLElement) {
-//            sb.append("<>...</>");
-//        } else if (jsxElement instanceof NormalHTMLElement) {
-//            NormalHTMLElement element = (NormalHTMLElement) jsxElement;
-//            sb.append("<").append(element.getIdentifier());
-//            for (HtmlAttribute attribute : element.getHtmlAttributes()) {
-//                sb.append(" ").append(attribute.getIdentifier())
-//                        .append("=").append(attribute.getValue().accept(new ASTPrinter()));
-//            }
-//            sb.append(">");
-//            for (JsxContentNode contentNode : element.getContentNodes()) {
-//                sb.append(contentNode.accept(new ASTPrinter()));
-//            }
-//            sb.append("</").append(element.getIdentifier()).append(">");
-//        } else if (jsxElement instanceof SelfClosingHTMLElement) {
-//            SelfClosingHTMLElement element = (SelfClosingHTMLElement) jsxElement;
-//            sb.append("<").append(element.getIdentifier());
-//            for (HtmlAttribute attribute : element.getHtmlAttributes()) {
-//                sb.append(" ").append(attribute.getIdentifier())
-//                        .append("=").append(attribute.getValue().accept(new ASTPrinter()));
-//            }
-//            sb.append(" />");
-//        }
-//        return sb.toString();
-//    }
+            for (JSXContentNode jsx : ((FragmentHTMLElementNode) jsxElement).getChildren()) {
+                sb.append("\n" + jsx);
+            }
+            sb.append("\n</>");
+        } else if (jsxElement instanceof NormalHTMLElementNode) {
+            NormalHTMLElementNode element = (NormalHTMLElementNode) jsxElement;
+            sb.append("<").append(element.getTagName());
+            for (HTMLAttribute attribute : element.getAttributes()) {
+                sb.append(" ").append(attribute.getName())
+                        .append("=").append(attribute.getValue());
+            }
+            sb.append(">");
+            for (JSXContentNode contentNode : element.getChildren()) {
+                sb.append(contentNode);
+            }
+            sb.append("</").append(element.getTagName()).append(">");
+        } else if (jsxElement instanceof SelfClosingHTMLElement) {
+            SelfClosingHTMLElement element = (SelfClosingHTMLElement) jsxElement;
+            sb.append("<").append(element.getTagName());
+            for (HTMLAttribute attribute : element.getAttributes()) {
+                sb.append(" ").append(attribute.getName())
+                        .append("=").append(attribute.getValue());
+            }
+            sb.append(" />");
+        }
+        return sb.toString();
+    }
 
     private static String indent(int level) {
         StringBuilder sb = new StringBuilder();

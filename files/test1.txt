@@ -1,22 +1,9 @@
-let a = 6;
+function Component() {
 
+let x = 10;
+return <>
+    <div onClick="hel">hello world!</div>
+    <h1>Welcome back </h1>
+</>;
 
-function foo(x) {
-    let y = 10;
-    let z = x + y;
-
-    function ll(z, b) {
-    let u = 23;
-    }
-    return z;
 }
-
-function boo (name) {
-    let m = "hllo";
-    let v = 33;
-}
-
-let v = 67;
-
-
-

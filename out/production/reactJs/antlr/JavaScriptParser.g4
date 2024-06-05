@@ -91,7 +91,6 @@ htmlAttributeValue
     | OpenBrace expression CloseBrace # JsxAttributeValue
     ;
 
-
 eos
     : SemiColon
     ;

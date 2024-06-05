@@ -35,8 +35,8 @@ public class Main {
         StatementNode result = visitor.visit(ast);
 
 //        symbolTable.printSymbolTable();
-        symbolTable.printAllScopes();
-//        System.out.println(ASTPrinter.printAST(result));
+//        symbolTable.printAllScopes();
+        System.out.println(ASTPrinter.printAST(result));
 //        System.out.printf(result.toString() + "\n");
 
     }

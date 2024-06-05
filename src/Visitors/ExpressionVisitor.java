@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNode> {
-    //    private final SymbolTable symbolTable = SymbolTable.getInstance();
     private final SymbolTable symbolTable;
 
     public ExpressionVisitor(SymbolTable symbolTable) {
@@ -28,9 +27,6 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
         symbolTable.addSymbol(identifier, new SymbolInfo("variable", null)); // Add identifier to symbol table
         return new MemberIndexExpressionNode(identifier, indexExpression);
     }
-
-
-    ///
 
     @Override
     public ExpressionNode visitAdditionExpression(AdditionExpressionContext ctx) {
@@ -48,7 +44,6 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
         return new SubtractionExpressionNode(leftExpression, rightExpression, operator);
     }
 
-
     @Override
     public ExpressionNode visitDivideExpression(DivideExpressionContext ctx) {
         ExpressionNode left = visit(ctx.expression(0));
@@ -63,9 +58,7 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
         return new MultiplyExpressionNode(left, right);
     }
 
-
     /// logical operation
-
     @Override
     public ExpressionNode visitLogicalOrExpression(LogicalOrExpressionContext ctx) {
         ExpressionNode left = visit(ctx.expression(0));
@@ -81,9 +74,7 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
         return new LogicalAndExpressionNode(left, right);
     }
 
-
     /// comparison
-
     @Override
     public ExpressionNode visitEqualityExpression(EqualityExpressionContext ctx) {
         ExpressionNode left = visit(ctx.expression(0));
@@ -291,6 +282,13 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
     public ExpressionNode visitNotExpressionStatement(NotExpressionStatementContext ctx) {
         ExpressionNode expression = visit(ctx.expression());
         return new NotExpressionNode(expression);
+    }
+
+
+    @Override
+    public ExpressionNode visitJsxElementExpression(JsxElementExpressionContext ctx) {
+        JsxVisitor jsxVisitor = new JsxVisitor();
+        return (ExpressionNode) jsxVisitor.visit(ctx.jsxElement());
     }
 
     @Override
