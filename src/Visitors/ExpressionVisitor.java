@@ -287,7 +287,7 @@ public class ExpressionVisitor extends JavaScriptParserBaseVisitor<ExpressionNod
 
     @Override
     public ExpressionNode visitJsxElementExpression(JsxElementExpressionContext ctx) {
-        JsxVisitor jsxVisitor = new JsxVisitor();
+        JsxVisitor jsxVisitor = new JsxVisitor(symbolTable);
         return (ExpressionNode) jsxVisitor.visit(ctx.jsxElement());
     }
 

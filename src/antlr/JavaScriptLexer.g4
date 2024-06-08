@@ -39,6 +39,10 @@ Continue : 'continue';
 Function : 'function';
 Return : 'return';
 New : 'new';
+Import  : 'import';
+From    : 'from';
+Export  : 'export';
+Default  : 'default';
 
 NullLiteral: 'null';
 BooleanLiteral: 'true' | 'false';
@@ -61,8 +65,5 @@ Finally    : 'finally';
 This       : 'this';
 Throw      : 'throw';
 Try        : 'try';
-From       : 'from';
 UseState   : 'useState';
-/// Future Reserved Words
-Export  : 'export';
-Import  : 'import';
+ /// Future Reserved Words

@@ -3,13 +3,24 @@ package Visitors;
 import AST.Expression.ExpressionNode;
 import AST.JsxElement.*;
 import AST.Statement.StatementNode;
+import ErrorHandling.SemanticError;
+import ErrorHandling.SyntaxError;
+import Symbol.SymbolInfo;
+import Symbol.SymbolTable;
 import antlr.JavaScriptParser.*;
 import antlr.JavaScriptParserBaseVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JsxVisitor extends JavaScriptParserBaseVisitor<StatementNode> {
+    private final SymbolTable symbolTable;
+
+
+    public JsxVisitor(SymbolTable symbolTable) {
+        this.symbolTable = symbolTable;
+    }
 
 
     @Override
@@ -55,6 +66,10 @@ public class JsxVisitor extends JavaScriptParserBaseVisitor<StatementNode> {
 
     @Override
     public StatementNode visitNormalHTMLElement(NormalHTMLElementContext ctx) {
+        if (!Objects.equals(ctx.Identifier(0).getText(), ctx.Identifier(1).getText())){
+            throw new SyntaxError('<'+ctx.Identifier(1).getText()+"> " + "cannot appear as a child of " + "<"+ctx.Identifier(0).getText()+'>');
+
+        }
         String tagName = ctx.Identifier(0).getText();
         List<HTMLAttribute> attributes = new ArrayList<>();
         for (HtmlAttributeContext attrCtx : ctx.htmlAttribute()) {
@@ -69,7 +84,16 @@ public class JsxVisitor extends JavaScriptParserBaseVisitor<StatementNode> {
 
     @Override
     public StatementNode visitSelfClosingHTMLElement(SelfClosingHTMLElementContext ctx) {
+
+
         String tagName = ctx.Identifier().getText();
+
+        if(Character.isUpperCase(ctx.Identifier().getText().charAt(0))){
+            SymbolInfo symbolInfo = symbolTable.lookup(tagName);
+            if (symbolInfo == null) {
+                throw new SemanticError("Variable '" + tagName + "' is not declared.");
+            }
+        }
         List<HTMLAttribute> attributes = new ArrayList<>();
         for (HtmlAttributeContext attrCtx : ctx.htmlAttribute()) {
             attributes.add((HTMLAttribute) visit(attrCtx));
@@ -81,5 +105,5 @@ public class JsxVisitor extends JavaScriptParserBaseVisitor<StatementNode> {
     public StatementNode visitStringLiteralAttributeValue(StringLiteralAttributeValueContext ctx) {
         return new StringLiteralAttributeValue(ctx.getText());
     }
-    
+
 }

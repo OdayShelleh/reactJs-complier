@@ -26,6 +26,10 @@ public class ASTPrinter {
             VariableDeclarationStatementNode stmt = (VariableDeclarationStatementNode) node;
             sb.append(indent(indent)).append("let ").append(stmt.getIdentifier())
                     .append(" = ").append(printExpression(stmt.getExpression(), indent + 2)).append(";\n");
+        }else if (node instanceof ImportStatementNode) {
+            sb.append(indent(indent)).append(node.toString()).append(";\n");
+        }else if (node instanceof ExportStatementNode) {
+            sb.append(indent(indent)).append(node.toString()).append(";\n");
         } else if (node instanceof ConditionalStatementNode) {
             ConditionalStatementNode stmt = (ConditionalStatementNode) node;
             sb.append(indent(indent)).append("if (").append(printExpression(stmt.getIfCondition(), 0)).append(") {\n");
