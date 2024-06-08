@@ -19,6 +19,8 @@ program
     | Function Identifier OpenParen (Identifier (Comma Identifier)*)? CloseParen OpenBrace statement* CloseBrace #FunctionDectarationStatement
     | Return expression? eos # ReturnStatement
     | expression eos # ExpressionStatement
+    |Import Identifier From StringLiteral eos #ImportStatement
+    |Export Default Identifier eos #ExportStatement
     ;
 
 

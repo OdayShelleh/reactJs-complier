@@ -1,9 +1,11 @@
+import Header from "w";
 function Component() {
 
 let x = 10;
+
 return <>
-    <div onClick="hel">hello world!</div>
-    <h1>Welcome back </h1>
+   <Header/>
 </>;
 
 }
+export default Component;

@@ -1,4 +1,4 @@
-// Generated from C:/Users/oday/Desktop/reactJs/src/antlr/JavaScriptParser.g4 by ANTLR 4.13.1
+// Generated from D:/temp/reactJs-complier/src/antlr/JavaScriptParser.g4 by ANTLR 4.13.1
 package antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -79,6 +79,20 @@ public interface JavaScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpressionStatement(JavaScriptParser.ExpressionStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ImportStatement}
+	 * labeled alternative in {@link JavaScriptParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImportStatement(JavaScriptParser.ImportStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExportStatement}
+	 * labeled alternative in {@link JavaScriptParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExportStatement(JavaScriptParser.ExportStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JavaScriptParser#if}.
 	 * @param ctx the parse tree

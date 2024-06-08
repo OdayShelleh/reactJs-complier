@@ -159,4 +159,23 @@ public class StatementVisitor extends JavaScriptParserBaseVisitor<StatementNode>
 
     }
 
+    @Override
+    public StatementNode visitImportStatement(ImportStatementContext ctx) {
+        String identifier = ctx.Identifier().getText();
+        String path = ctx.StringLiteral().getText();
+        if (symbolTable.lookup(identifier) != null) {
+            throw new SemanticError("Variable '" + identifier + "' already declared.");
+        }
+
+        symbolTable.addSymbol(identifier, new SymbolInfo("variable",path ));
+
+        return new ImportStatementNode(identifier,path);
+    }
+
+    @Override
+    public StatementNode visitExportStatement(ExportStatementContext ctx) {
+        String identifier = ctx.Identifier().getText();
+
+        return  new ExportStatementNode(identifier);
+    }
 }

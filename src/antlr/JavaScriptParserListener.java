@@ -1,4 +1,4 @@
-// Generated from C:/Users/oday/Desktop/reactJs/src/antlr/JavaScriptParser.g4 by ANTLR 4.13.1
+// Generated from D:/temp/reactJs-complier/src/antlr/JavaScriptParser.g4 by ANTLR 4.13.1
 package antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -125,6 +125,30 @@ public interface JavaScriptParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpressionStatement(JavaScriptParser.ExpressionStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ImportStatement}
+	 * labeled alternative in {@link JavaScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterImportStatement(JavaScriptParser.ImportStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ImportStatement}
+	 * labeled alternative in {@link JavaScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitImportStatement(JavaScriptParser.ImportStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExportStatement}
+	 * labeled alternative in {@link JavaScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterExportStatement(JavaScriptParser.ExportStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExportStatement}
+	 * labeled alternative in {@link JavaScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitExportStatement(JavaScriptParser.ExportStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JavaScriptParser#if}.
 	 * @param ctx the parse tree
